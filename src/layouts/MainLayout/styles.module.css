@@ -1,0 +1,12 @@
+.main-bg{
+    background-color: var(--bg-main);
+}
+
+.container{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.wrapper{
+    margin-top: 30px
+}

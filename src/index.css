@@ -1,0 +1,22 @@
+:root{
+    --bg-dark:#1F1F1F;
+    /* Primary Colors */
+--primary: #06B6D4;
+--primary-hover: #0891B2;
+
+/* Background */
+--bg-main: #F5F5F5;
+--bg-card: #FAFAFA;
+--bg-pure: #FFF;
+/* Text */
+--text-main: #1F2937;
+--text-secondary: #6B7280;
+--text-color: #FAFAFA;
+
+/* Borders */
+--border-color: #E5E7EB;
+
+/* Extra */
+--hover-bg: #EFF6FF;
+
+}
