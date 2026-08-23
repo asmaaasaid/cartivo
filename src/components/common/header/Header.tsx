@@ -14,7 +14,7 @@ const Header = () => {
         </div>
 
         {/* navigation bar */}
-    <Navbar expand="lg" className="" bg="dark" data-bs-theme="dark" >
+    <Navbar expand="lg" className="py-3 rounded shadow" bg="dark" data-bs-theme="dark" >
       <Container fluid>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
