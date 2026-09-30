@@ -6,11 +6,20 @@ import { useEffect } from "react";
 import { actGetProductsByCatPrefix, productsCleanUp } from "@store/products/productsSlice";
 import Loading from "@components/feedback/Loading/Loading";
 import GridList from "@components/common/GridList/GridList";
+import type { TProduct } from "@customTypes/product";
+import Heading from "@components/common/Heading/Heading";
 
 const Products = () => {
-  const {loading, error, records} = useAppSelector((state)=> state.products)
+  const {loading, error, records} = useAppSelector((state)=> state.products);
   const params = useParams();
   const dispatch = useAppDispatch();
+  const cartItems = useAppSelector(state => state.cart.items);
+
+    const productsFullInfo = records.map((el) => ({
+    ...el,
+    quantity: cartItems[el.id] || 0,
+  }));
+
   useEffect(() => {
     dispatch(actGetProductsByCatPrefix(params.prefix as string));
     return ()=>{
@@ -20,11 +29,13 @@ const Products = () => {
 
   return (
     <Container>
+      <Heading> {params.prefix} products</Heading>
       <Loading status={loading} error={error}>
-        
-       <GridList records={records} renderItem={(record)=>  <Product {...record}/> } /> 
+        <GridList<TProduct>
+          records={productsFullInfo}
+          renderItem={(record) => <Product {...record} />}
+        />
       </Loading>
-      
     </Container>
   );
 };
