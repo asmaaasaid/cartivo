@@ -1,14 +1,14 @@
-.basketContainer {
+.container {
   position: relative;
   cursor: pointer;
   align-self: flex-end;
 }
 
-.basketQuantity {
+.totalNum {
   background-color: #0dcaf0;
-  height: 22px;
-  width: 22px;
-  border-radius: 10px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
   text-align: center;
   border: 1px solid;
   position: absolute;
@@ -17,7 +17,7 @@
   font-size: 12px;
 }
 
-.pumpCartQuantity {
+.pumpAnimate{
   animation: pumping 300ms ease-out;
 }
 

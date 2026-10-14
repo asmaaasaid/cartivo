@@ -14,10 +14,12 @@ const Products = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector(state => state.cart.items);
+  const wishlistItemsId = useAppSelector(state => state.wishlist.itemsId);
 
     const productsFullInfo = records.map((el) => ({
     ...el,
     quantity: cartItems[el.id] || 0,
+    isLiked: wishlistItemsId.includes(el.id),
   }));
 
   useEffect(() => {
@@ -30,7 +32,7 @@ const Products = () => {
   return (
     <Container>
       <Heading> {params.prefix} products</Heading>
-      <Loading status={loading} error={error}>
+      <Loading loading={loading} error={error}>
         <GridList<TProduct>
           records={productsFullInfo}
           renderItem={(record) => <Product {...record} />}

@@ -38,6 +38,10 @@ const cartSlice = createSlice({
         (el) => el.id !== action.payload.id,
       );
     },
+
+    // cartFullInfoCleanUp: (state)=>{
+    //   state.productsFullInfo = []
+    // }
   },
   extraReducers: (builder) => {
     builder.addCase(actGetProductsByItems.pending, (state) => {

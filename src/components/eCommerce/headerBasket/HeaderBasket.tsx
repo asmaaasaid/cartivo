@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const HeaderBasket = () => {
   const [isAnimate, setIsAnimate] = useState(false)
   const totalQuantity = useAppSelector( getCartTotalQuantitySelector )
-  const quantityStyle = `${styles.basketQuantity } ${isAnimate ? styles.pumpCartQuantity : "" }`
+  const quantityStyle = `${styles.totalNum } ${isAnimate ? styles.pumpAnimate : "" }`
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -25,9 +25,11 @@ const HeaderBasket = () => {
   },[totalQuantity])
 
   return (
-    <div className={styles.basketContainer} onClick={()=> navigate("/cart")}>
+    <div className={styles.container} onClick={()=> navigate("/cart")}>
       <Logo title='logo icon'/>
-      <div className={quantityStyle}> {totalQuantity} </div>
+      {
+        totalQuantity > 0 && <div className={quantityStyle}> {totalQuantity} </div>
+      }
     </div>
   )
 }

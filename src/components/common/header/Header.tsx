@@ -1,7 +1,9 @@
 import  { Navbar, Container, Nav } from "react-bootstrap"
 import { NavLink } from "react-router-dom";
-import HeaderBasket from "../../eCommerce/headerBasket/HeaderBasket"
+import HeaderWishlist from "@components/eCommerce/HeaderWishlist/HeaderWishlist";
+import HeaderBasket from "@components/eCommerce/headerBasket/HeaderBasket";
 import styles from './styles.module.css';
+
 
 
 const Header = () => {
@@ -10,7 +12,10 @@ const Header = () => {
         {/* nav header */}
         <div className={styles.headerContainer}>
             <h1 className={styles.headerLogo}  >cartivo</h1>
-            <HeaderBasket/>
+            <div className="d-flex align-items-center">
+                <HeaderWishlist/>
+                <HeaderBasket/>
+            </div>
         </div>
 
         {/* navigation bar */}

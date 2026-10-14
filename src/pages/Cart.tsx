@@ -29,6 +29,9 @@ const Cart = () => {
 
     const removeItemHndler = useCallback((id: number)=>{
       dispatch(cartItemRemove({ id }));
+      // return ()=>{
+      //   dispatch(cartFullInfoCleanUp())
+      // }
     },[dispatch])
   return (
     <>
