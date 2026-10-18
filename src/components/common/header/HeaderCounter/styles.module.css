@@ -2,7 +2,10 @@
   position: relative;
   cursor: pointer;
   align-self: flex-end;
+  
 }
+
+
 
 .totalNum {
   background-color: #0dcaf0;

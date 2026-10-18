@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getCartTotalQuantitySelector } from "./selectors";
 import actGetProductsByItems from "./act/actGetProductsByItems";
 import type { TLoading } from "@customTypes/shared";
+import { isString } from "@customTypes/guards";
 
 interface IcartState {
   items: { [key: string]: number };
@@ -39,9 +40,9 @@ const cartSlice = createSlice({
       );
     },
 
-    // cartFullInfoCleanUp: (state)=>{
-    //   state.productsFullInfo = []
-    // }
+    cartFullInfoCleanUp: (state)=>{
+      state.productsFullInfo = []
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(actGetProductsByItems.pending, (state) => {
@@ -53,7 +54,7 @@ const cartSlice = createSlice({
     });
     builder.addCase(actGetProductsByItems.rejected, (state, action) => {
       state.loading = "failed";
-      if (action.payload && typeof action.payload === "string") {
+      if (isString(action.payload)) {
         state.error = action.payload;
       }
     });
@@ -61,5 +62,5 @@ const cartSlice = createSlice({
 });
 
 export { getCartTotalQuantitySelector, actGetProductsByItems };
-export const { addToCart, cartItemChangeQuantity, cartItemRemove } = cartSlice.actions;
+export const { addToCart, cartItemChangeQuantity, cartItemRemove, cartFullInfoCleanUp } = cartSlice.actions;
 export default cartSlice.reducer;

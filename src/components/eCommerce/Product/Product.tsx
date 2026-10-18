@@ -11,6 +11,8 @@ import { memo, useEffect, useState } from "react";
 
 
 const Product = memo( ({id, title, img, price, max, quantity, isLiked}: TProduct) => {
+  console.log('fire');
+  
   const dispatch = useAppDispatch();
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

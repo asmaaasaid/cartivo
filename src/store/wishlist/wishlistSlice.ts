@@ -3,6 +3,7 @@ import actLikeToggle from './act/actLikeToggle'
 import actGetWishlist from './act/actGetWishlist'
 import type { TProduct } from '@customTypes/product'
 import type { TLoading } from '@customTypes/shared';
+import { isString } from '@customTypes/guards';
 
 interface IWishlist {
     itemsId : number[],
@@ -21,7 +22,7 @@ const wishlistSlice = createSlice({
     name: 'wishlist',
     initialState,
     reducers: {
-        productsFullInfoCleanUp: (state)=>{
+        wishlistFullInfoCleanUp: (state)=>{
             state.productsFullInfo = []
         }
     },
@@ -55,7 +56,7 @@ const wishlistSlice = createSlice({
         });
         builder.addCase(actGetWishlist.rejected, (state, action)=>{
             state.loading = 'failed'
-            if(action.payload && typeof action.payload === "string"){
+            if(isString(action.payload)){
                 state.error = action.payload;
             }
         });
@@ -63,6 +64,6 @@ const wishlistSlice = createSlice({
     }
 })
 
-export const {productsFullInfoCleanUp} = wishlistSlice.actions
+export const {wishlistFullInfoCleanUp} = wishlistSlice.actions
 export { actLikeToggle, actGetWishlist }
 export default wishlistSlice.reducer
