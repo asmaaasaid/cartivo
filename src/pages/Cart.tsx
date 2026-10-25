@@ -2,6 +2,7 @@ import Heading from "@components/common/Heading/Heading";
 import CartItemList from "@components/eCommerce/CartItemList/CartItemList";
 import CartSubtotalPrice from "@components/eCommerce/CartSubtotalPrice/CartSubtotalPrice";
 import Loading from "@components/feedback/Loading/Loading";
+import LottieHandler from "@components/feedback/LottieHandler/LottieHandler";
 import useCart from "@hooks/useCart";
 
 const Cart = () => {
@@ -10,9 +11,9 @@ const Cart = () => {
   return (
     <>
       <Heading title="cart" />
-      <Loading loading={loading} error={error}>
+      <Loading loading={loading} error={error} type="cart">
         {products.length === 0 ? (
-          <p className="text-center">Your cart is empty</p>
+         <LottieHandler type="cartEmptyState" message="your cart is empty"/>
         ) : (
           <>
             <CartItemList
