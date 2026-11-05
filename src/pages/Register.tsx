@@ -1,47 +1,25 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import useRegister from "@hooks/useRegister";
 import Heading from "@components/common/Heading/Heading";
-import { Form, Col, Row, Button } from "react-bootstrap";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, type signUpType } from "@validations/signUpSchema";
+import { Form, Col, Row, Button, Spinner } from "react-bootstrap";
 import Input from "@components/Form/Input/Input";
-import useCheckEmailAvilability from "@hooks/useCheckEmailAvilability";
+import { Navigate } from "react-router-dom";
 
 const Register = () => {
   const {
+    loading,
+    error,
+    accessToken,
     register,
     handleSubmit,
-    formState: { errors },
-    trigger,
-    getFieldState,
-  } = useForm<signUpType>({
-    mode: "onBlur",
-    resolver: zodResolver(signUpSchema),
-  });
-
-  const submitForm: SubmitHandler<signUpType> = (data) => {
-    console.log(data);
-  };
-
-  const {
+    formErrors,
+    submitForm,
     emailAvilabilityStatus,
-    enteredEmail,
-    checkEmailAvilability,
-    resetCheckEmailAvilability,
-  } = useCheckEmailAvilability();
+    emailOnBlurHandler,
+  } = useRegister();
+  if (accessToken) {
+    return <Navigate to="/" replace />;
+  }
 
-  const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
-    await trigger("email");
-    const value = e.target.value;
-    const { isDirty, invalid } = getFieldState("email");
-
-    if (isDirty && !invalid && enteredEmail !== value) {
-      checkEmailAvilability(value);
-    }
-
-    if (isDirty && invalid && enteredEmail) {
-      resetCheckEmailAvilability();
-    }
-  };
   return (
     <>
       <Heading title="register" />
@@ -53,7 +31,7 @@ const Register = () => {
               label="first name"
               name="firstName"
               register={register}
-              error={errors.firstName?.message ?? ""}
+              error={formErrors.firstName?.message ?? ""}
             />
           </Col>
           <Col md={6}>
@@ -61,7 +39,7 @@ const Register = () => {
               label="last name"
               name="lastName"
               register={register}
-              error={errors.lastName?.message ?? ""}
+              error={formErrors.lastName?.message ?? ""}
             />
           </Col>
         </Row>
@@ -71,8 +49,8 @@ const Register = () => {
           name="email"
           register={register}
           error={
-            errors.email?.message
-              ? errors.email?.message
+            formErrors.email?.message
+              ? formErrors.email?.message
               : emailAvilabilityStatus == "notAvilable"
                 ? "this email is already in use."
                 : emailAvilabilityStatus == "failed"
@@ -100,7 +78,7 @@ const Register = () => {
               label="password"
               name="password"
               register={register}
-              error={errors.password?.message ?? ""}
+              error={formErrors.password?.message ?? ""}
             />
           </Col>
 
@@ -110,7 +88,7 @@ const Register = () => {
               label="confirm password"
               name="confirmPassword"
               register={register}
-              error={errors.confirmPassword?.message ?? ""}
+              error={formErrors.confirmPassword?.message ?? ""}
             />
           </Col>
         </Row>
@@ -118,10 +96,22 @@ const Register = () => {
         <Button
           variant="primary"
           type="submit"
-          disabled={emailAvilabilityStatus == "checking" ? true : false}
+          disabled={
+            emailAvilabilityStatus == "checking"
+              ? true
+              : false || loading == "pending"
+          }
         >
-          Submit
+          {loading == "pending" ? (
+            <>
+              <Spinner animation="border" size="sm" /> loading...
+            </>
+          ) : (
+            "Submit"
+          )}
         </Button>
+
+        {error && <p>{error}</p>}
       </Form>
     </>
   );

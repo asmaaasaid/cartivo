@@ -2,17 +2,31 @@ import { Navbar, Container, Nav } from "react-bootstrap"
 import { NavLink } from "react-router-dom";
 import styles from './styles.module.css';
 import HeaderLefBar from "./HeaderLeftBar/HeaderLefBar";
-
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useAppSelector, useAppDispatch } from "@store/hooks";
+import { authLogout } from "@store/auth/authSlice";
+import { useEffect } from "react";
+import { actGetWishlist } from "@store/wishlist/wishlistSlice";
 
 
 const Header = () => {
+  const dispatch = useAppDispatch();
+  const {user, accessToken} = useAppSelector((state)=> state.auth);
+  
+  useEffect(()=>{
+    // if (!accessToken || !user) {
+    //   dispatch(wishlistCleanUp());
+    //   return;
+    // }
 
+    dispatch(actGetWishlist("productIds"));
+  }, [dispatch, accessToken])
   return (
     <header>
       {/* nav header */}
       <div className={styles.headerContainer}>
         <h1 className={styles.headerLogo}>cartivo</h1>
-        <HeaderLefBar/>
+        <HeaderLefBar />
       </div>
 
       {/* navigation bar */}
@@ -37,13 +51,31 @@ const Header = () => {
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
+
           <Nav>
-            <Nav.Link as={NavLink} to="/login" className="nav-link">
-              login
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/register" className="nav-link">
-              register
-            </Nav.Link>
+            {!accessToken ? (
+              <>
+                <Nav.Link as={NavLink} to="/login" className="nav-link">
+                  login
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/register" className="nav-link">
+                  register
+                </Nav.Link>
+              </>
+            ) : (
+              <>
+                <NavDropdown title={ `${user?.firstName} ${user?.lastName}` } id="products-dropdown">
+                  <NavDropdown.Item as={NavLink} to="/profile" >
+                    profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item >orders</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={NavLink} to="/" onClick={() => dispatch(authLogout())}>
+                    logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
+            )}
           </Nav>
         </Container>
       </Navbar>

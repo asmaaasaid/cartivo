@@ -1,4 +1,4 @@
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Spinner, Modal } from "react-bootstrap";
 import styles from "./styles.module.css";
 const { product, productImg, cardOverlay } = styles;
 import Like from '@assets/svg/like.svg?react';
@@ -10,14 +10,17 @@ import { addToCart } from "@store/cart/cartSlice";
 import { memo, useEffect, useState } from "react";
 
 
-const Product = memo( ({id, title, img, price, max, quantity, isLiked}: TProduct) => {
-  console.log('fire');
+const Product = memo( ({id, title, img, price, max, quantity, isLiked, isAuthenticated}: TProduct) => {
   
+  const [show, setShow] = useState(false);
   const dispatch = useAppDispatch();
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const currentRemainingQuantity = max - (quantity ?? 0)
-  const quantityReachedToMax = currentRemainingQuantity <=0 ? true : false
+  const quantityReachedToMax = currentRemainingQuantity <=0 ? true : false;
+
+  //  close modal
+  const handleClose = () => setShow(false);
 
   useEffect( ()=>{
     if(!isBtnDisabled){
@@ -39,7 +42,8 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked}: TProduct
 
 
   const likeToggleHandler = ()=>{
-    if(isLoading){
+    if(isAuthenticated ){
+      if(isLoading){
       return;
     }
     setIsLoading(true);
@@ -47,8 +51,25 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked}: TProduct
       .unwrap()
       .then(() => setIsLoading(false))
       .catch(() => setIsLoading(false));
+    } else{
+      setShow(true);
+    }
+     
   }
   return (
+    <>
+    <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Login Required</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You must be logged in to like a product.</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+   
     <div
       className={` ${product} relative card border-0 overflow-hidden text-bg-dark `}
     >
@@ -93,6 +114,7 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked}: TProduct
         </Button>
       </div>
     </div>
+     </>
   );
 });
 
