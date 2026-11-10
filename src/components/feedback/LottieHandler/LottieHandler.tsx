@@ -4,13 +4,15 @@ import cartEmptyState from "@assets/lottieFiles/cartEmptyState.json";
 import cartLoadingState from "@assets/lottieFiles/cartLoadingState.json";
 import errorAnimation from "@assets/lottieFiles/errorAnimation.json";
 import loading from "@assets/lottieFiles/loading.json";
+import success from "@assets/lottieFiles/success.json"
 
 const lottieFilesMap = {
   notFound,
   cartEmptyState,
   cartLoadingState,
   errorAnimation,
-  loading
+  loading,
+  success,
 };
 
 type lottieHandlerProps = {

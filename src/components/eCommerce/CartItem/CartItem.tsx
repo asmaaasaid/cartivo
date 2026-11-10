@@ -1,7 +1,8 @@
 import { Form, Button } from "react-bootstrap";
-import styles from './styles.module.css'
+import styles from "./styles.module.css";
 import type { TProduct } from "@customTypes/product";
 import { memo } from "react";
+import ProductInfo from "../ProductInfo/ProductInfo";
 
 type CartItemProps = TProduct & {
   changeQuantityHandler: (id: number, quantity: number) => void;
@@ -34,15 +35,9 @@ const CartItem = memo( ({
     changeQuantityHandler(id, newQuantity);
   };
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center border-bottom py-4">
-        <div>
-          <img className={styles.productImg} src={img} alt={title} />
-        </div>
-        <div className="ms-5 d-flex flex-column ">
-          <h4>{title}</h4>
-          <h5>{price.toFixed(2)} EGP</h5>
-          <Button
+    <div className={styles.cartItem}>
+     <ProductInfo title={title} img={img} price={price} direction="column" />
+     <Button
             variant="secondary"
             style={{ color: "white" }}
             className="mt-auto"
@@ -50,7 +45,7 @@ const CartItem = memo( ({
           >
             Remove
           </Button>
-        </div>
+       
         <div>
           <span className="d-block mb-1">Quantity</span>
           <Form.Select
@@ -61,8 +56,7 @@ const CartItem = memo( ({
             {renderOption}
           </Form.Select>
         </div>
-      </div>
-    </>
+    </div>
   );
 });
 

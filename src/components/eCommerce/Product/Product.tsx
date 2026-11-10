@@ -1,6 +1,6 @@
 import { Button, Spinner, Modal } from "react-bootstrap";
 import styles from "./styles.module.css";
-const { product, productImg, cardOverlay } = styles;
+// const {  productImg, cardOverlay } = styles;
 import Like from '@assets/svg/like.svg?react';
 import LikeFill from '@assets/svg/like-fill.svg?react';
 import type { TProduct } from "@customTypes/product";
@@ -8,7 +8,7 @@ import { useAppDispatch } from "@store/hooks";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import { addToCart } from "@store/cart/cartSlice";
 import { memo, useEffect, useState } from "react";
-
+import ProductInfo from "../ProductInfo/ProductInfo";
 
 const Product = memo( ({id, title, img, price, max, quantity, isLiked, isAuthenticated}: TProduct) => {
   
@@ -70,9 +70,7 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked, isAuthent
         </Modal.Footer>
       </Modal>
    
-    <div
-      className={` ${product} relative card border-0 overflow-hidden text-bg-dark `}
-    >
+    <ProductInfo title={title} img={img} price={price}  >
       <div className={styles.wishlistBtn} onClick={likeToggleHandler}>
         {isLoading ? (
           <Spinner
@@ -84,14 +82,11 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked, isAuthent
         ) : isLiked ? <LikeFill /> : <Like />}
        
       </div>
-      <div className={productImg}>
-        <img src={img} alt={title} />
-      </div>
-      <div
+      
+      {/* <div
         className={` ${cardOverlay}  flex-column text-center d-flex justify-content-center align-items-center `}
-      >
-        <h2 title={title}>{title}</h2>
-        <h3> {price} </h3>
+      > */}
+        
         <p>
           {quantityReachedToMax
             ? "you have reach to the limit"
@@ -112,8 +107,8 @@ const Product = memo( ({id, title, img, price, max, quantity, isLiked, isAuthent
             "add to cart"
           )}
         </Button>
-      </div>
-    </div>
+      {/* </div> */}
+    </ProductInfo>
      </>
   );
 });

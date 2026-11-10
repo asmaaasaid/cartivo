@@ -65,10 +65,10 @@ const Header = () => {
             ) : (
               <>
                 <NavDropdown title={ `${user?.firstName} ${user?.lastName}` } id="products-dropdown">
-                  <NavDropdown.Item as={NavLink} to="/profile" >
+                  <NavDropdown.Item as={NavLink} to="/profile" end>
                     profile
                   </NavDropdown.Item>
-                  <NavDropdown.Item >orders</NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="profile/orders">orders</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={NavLink} to="/" onClick={() => dispatch(authLogout())}>
                     logout

@@ -6,6 +6,7 @@ import LottieHandler from "@components/feedback/LottieHandler/LottieHandler";
 
 // Lazy load the pages
 const MainLayout = lazy(() => import("@layouts/MainLayout/MainLayout"));
+const ProfileLayout = lazy(() => import("@layouts/ProfileLayout/ProfileLayout"));
 const Home = lazy(() => import("@pages/Home"));
 const Categories = lazy(() => import("@pages/Categories"));
 const Products = lazy(() => import("@pages/Products"));
@@ -14,7 +15,8 @@ const Login = lazy(() => import("@pages/Login"));
 const Register = lazy(() => import("@pages/Register"));
 const Cart = lazy(() => import("@pages/Cart"));
 const Wishlist = lazy(() => import("@pages/Wishlist"));
-const Profile = lazy(() => import("@pages/Profile"));
+const Account = lazy(() => import("@pages/Account"));
+const Orders = lazy(() => import("@pages/Orders"));
 
 // protected route
 import ProtectedRoute from "@components/Auth/ProtectedRoute";
@@ -23,9 +25,13 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Suspense fallback={<div style={{marginTop: "70px"}}>
-        <LottieHandler type ="loading" message ="please wait..."/>
-      </div>}>
+      <Suspense
+        fallback={
+          <div style={{ marginTop: "70px" }}>
+            <LottieHandler type="loading" message="please wait..." />
+          </div>
+        }
+      >
         <MainLayout />
       </Suspense>
     ),
@@ -60,10 +66,9 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <PageSuspenseFallBack>
-            <Wishlist />
-          </PageSuspenseFallBack>
+              <Wishlist />
+            </PageSuspenseFallBack>
           </ProtectedRoute>
-          
         ),
       },
       {
@@ -116,11 +121,18 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <PageSuspenseFallBack>
-            <Profile />
-          </PageSuspenseFallBack>
+              <ProfileLayout />
+            </PageSuspenseFallBack>
           </ProtectedRoute>
-          
         ),
+        children: [
+          { index: true,
+            element: <Account /> },
+          {
+            path: "orders",
+            element: <Orders />,
+          },
+        ],
       },
     ],
   },
