@@ -1,11 +1,14 @@
 import { isAxiosError } from "axios";
 
-const axiosErrorHandler = (error: unknown) => {
-       if (isAxiosError(error)) {
-        return error.response?.data || error.response?.data.message || error.message;
-      } else {
-        return "Unexpected Error";
-      }
-}
+const axiosErrorHandler = (error: unknown): string => {
+  if (isAxiosError(error)) {
+    const data = error.response?.data;
+    if (typeof data === "string" && !data.trim().startsWith("<")) return data;
 
-export default axiosErrorHandler
+    return data.message ?? error.message;
+  } else {
+    return "Unexpected Error";
+  }
+};
+
+export default axiosErrorHandler;

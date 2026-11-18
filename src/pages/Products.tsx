@@ -10,7 +10,7 @@ const Products = () => {
  const {loading, error, productsFullInfo, productPrefix} = useProducts()
   return (
     <Container>
-      <Heading title = {`${productPrefix} products`}/> 
+      <Heading title = {`${productPrefix?.replace(/-/g, " ")} products`}/> 
       <Loading loading={loading} error={error} type="product">
         <GridList<TProduct>
           typeMessage="there are no products"
