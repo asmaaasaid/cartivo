@@ -1,48 +1,36 @@
 import type { RootState } from '@store/index';
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import type { TProduct }  from '@customTypes/product'
+// import axios from "axios";
+// import type { TProduct }  from '@customTypes/product'
 import axiosErrorHandler from "@util/axiosErrorHandler";
+import { readWishlist } from '@services/wishlistStorage';
+import getProductsByIds from '@util/getProductsByIds';
 
 type TDataType = "productsFullInfo" | "productIds"
-type TResponse = TProduct[] 
+
 const actGetWishlist = createAsyncThunk(
   "wishlist/actGetWishlist",
   async (dataType: TDataType, thunkAPI) => {
     const { rejectWithValue, signal, getState } = thunkAPI;
-    const { auth } = getState() as RootState;
+    // const { auth } = getState() as RootState;
+    const userId = (getState() as RootState).auth.user?.id;
 
-    try {
-      const userWishList = await axios.get<{ productId: number }[]>(
-        `/wishlist?userId=${auth.user?.id}`,
-        { signal },
-      );
-
-      if (!userWishList.data.length) {
+    if (!userId) {
         return { data: [], dataType };
       }
 
-      if (dataType === "productIds") {
-        const concatenatedItemsId = userWishList.data.map(
-          (el) => el.productId,
-        );
-        return { data: concatenatedItemsId, dataType };
-      } else {
-        const concatenatedItemsId = userWishList.data
-        .map((el) => `id=${el.productId}`)
-        .join("&");
+      const ids = readWishlist(userId);
 
-      const response = await axios.get<TResponse>(
-        `/products?${concatenatedItemsId}`,
-        { signal },
-      );
-
-        return { data: response.data, dataType };
+      if(dataType === "productIds"){
+        return {data: ids, dataType}
       }
-      
-    } catch (error) {
-      return rejectWithValue(axiosErrorHandler(error));
-    }
+
+      try {
+        const products = await getProductsByIds(ids, signal);
+        return {data: products, dataType}
+      } catch (error) {
+         return rejectWithValue(axiosErrorHandler(error));
+      }
   },
 );
 

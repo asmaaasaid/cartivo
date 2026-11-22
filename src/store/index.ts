@@ -37,7 +37,7 @@ const authPersistConfig = {
 const cartPersistConfig = {
   key: 'cart',
   storage,
-  whitelist: ['items'],
+  whitelist: ['items', 'ownerId', 'savedCarts'],
 }
 
 

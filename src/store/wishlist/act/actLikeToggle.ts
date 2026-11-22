@@ -1,33 +1,44 @@
+
 import type { RootState } from "@store/index";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosErrorHandler from "@util/axiosErrorHandler";
-import axios from "axios";
+// import axiosErrorHandler from "@util/axiosErrorHandler";
+// import axios from "axios";
+import { readWishlist, writeWishlist } from "@services/wishlistStorage";
 
 const actLikeToggle = createAsyncThunk(
   "wishlist/actLikeToggle",
   async (id: number, thunkAPI) => {
     const { rejectWithValue, getState } = thunkAPI;
-    const { auth } = getState() as RootState;
-    const userId = auth.user?.id;
+    // const { auth } = getState() as RootState;
+    // const userId = auth.user?.id;
+    const userId = (getState() as RootState).auth.user?.id
 
     if (!userId) {
       return rejectWithValue("You must be logged in to update your wishlist.");
     }
-
-    try {
-      const isRecordExist = await axios.get(
-        `/wishlist?userId=${userId}&productId=${id}`,
-      );
-      if (isRecordExist.data.length > 0) {
-        await axios.delete(`/wishlist/${isRecordExist.data[0].id}`);
-        return { type: "remove", id };
-      }
-
-      await axios.post("/wishlist", { userId, productId: id });
-      return { type: "add", id };
-    } catch (error) {
-      return rejectWithValue(axiosErrorHandler(error));
+    const ids = readWishlist(userId)
+    
+    if(ids.includes(id)){
+      writeWishlist(userId, ids.filter((el)=> el !== id));
+      return {type: "remove" as const, id}
     }
+
+    writeWishlist(userId, [...ids,id]);
+    return {type: "add" as const, id}
+    // try {
+    //   const isRecordExist = await axios.get(
+    //     `/wishlist?userId=${userId}&productId=${id}`,
+    //   );
+    //   if (isRecordExist.data.length > 0) {
+    //     await axios.delete(`/wishlist/${isRecordExist.data[0].id}`);
+    //     return { type: "remove", id };
+    //   }
+
+    //   await axios.post("/wishlist", { userId, productId: id });
+    //   return { type: "add", id };
+    // } catch (error) {
+    //   return rejectWithValue(axiosErrorHandler(error));
+    // }
   },
 );
 

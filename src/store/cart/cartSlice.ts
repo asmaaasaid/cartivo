@@ -4,18 +4,25 @@ import { getCartTotalQuantitySelector } from "./selectors";
 import actGetProductsByItems from "./act/actGetProductsByItems";
 import type { TLoading } from "@customTypes/shared";
 import { isString } from "@customTypes/guards";
+import { actAuthLogin, authLogout } from "@store/auth/authSlice";
+
+type TItems = { [key: string]: number };
 
 interface IcartState {
-  items: { [key: string]: number };
+  items: TItems;
   productsFullInfo: TProduct[];
   loading: TLoading;
   error: null | string;
+  ownerId: string | null;
+  savedCarts: { [userId: string]: TItems };
 }
 const initialState: IcartState = {
   items: {},
   productsFullInfo: [],
   loading: "idle",
   error: null,
+  ownerId: null,
+  savedCarts: {},
 };
 const cartSlice = createSlice({
   name: "cart",
@@ -59,6 +66,30 @@ const cartSlice = createSlice({
       if (isString(action.payload)) {
         state.error = action.payload;
       }
+    });
+
+    // login: merge all products user&visitor
+    builder.addCase(actAuthLogin.fulfilled, (state, action) => {
+      const userId = String(action.payload.user.id);
+      const merged: TItems = { ...(state.savedCarts[userId] ?? {}) };
+
+      for (const [id, qty] of Object.entries(state.items)) {
+        merged[id] = Math.max(merged[id] ?? 0, qty);
+      }
+
+      state.items = merged;
+      state.ownerId = userId;
+      delete state.savedCarts[userId];
+    });
+
+    // logout: delete cart items
+    builder.addCase(authLogout, (state) => {
+      if (state.ownerId) {
+        state.savedCarts[state.ownerId] = { ...state.items };
+      }
+      state.items = {};
+      state.ownerId = null;
+      state.productsFullInfo = [];
     });
   },
 });

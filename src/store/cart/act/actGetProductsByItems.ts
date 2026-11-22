@@ -1,33 +1,47 @@
-import type { TProduct } from "@customTypes/product";
+import {
+  mapProduct,
+  type TApiProduct,
+  type TProduct,
+} from "@customTypes/product";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { api } from "@services/api";
 import type { RootState } from "@store/index";
 import axiosErrorHandler from "@util/axiosErrorHandler";
-import axios  from "axios";
 
-type TResponse = TProduct[]
 const actGetProductsByItems = createAsyncThunk(
   "act/actGetProductsByItems",
   async (_, thunkAPI) => {
-    const {rejectWithValue, fulfillWithValue, getState , signal} = thunkAPI;
-    const {cart} = getState() as RootState;
+    const { rejectWithValue, getState, signal } = thunkAPI;
+    const { cart } = getState() as RootState & {
+      cart: { items: Record<string, unknown> };
+    };
     const itemsId = Object.keys(cart.items);
-    
-    if(!itemsId.length){
-        return fulfillWithValue([])
+
+    if (!itemsId.length) {
+      return [] as TProduct[];
     }
-    
+
     try {
-      const concatanatedItemsId = itemsId.map((el) => `id=${el}`).join("&");
-      const response = await axios.get<TResponse>(
-        `/products?${concatanatedItemsId}`,
-        {signal}
+      const response = await Promise.allSettled(
+        itemsId.map((id) =>
+          api.get<TApiProduct>(`/products/${id}`, { signal }),
+        ),
       );
-      return response.data;
+      const productsInCart: TProduct[] = [];
+      for (const res of response) {
+        if (res.status === "fulfilled") {
+          productsInCart.push(mapProduct(res.value.data));
+        }
+      }
+
+      if (productsInCart.length === 0) {
+        return rejectWithValue("Could not load your cart items.");
+      }
+      return productsInCart;
     } catch (error) {
-      return rejectWithValue(axiosErrorHandler(error))
+      return rejectWithValue(axiosErrorHandler(error));
     }
-        
   },
 );
 
-export default actGetProductsByItems
+export default actGetProductsByItems;

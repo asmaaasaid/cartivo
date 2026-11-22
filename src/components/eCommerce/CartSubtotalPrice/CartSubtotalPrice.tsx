@@ -53,7 +53,7 @@ const CartSubtotalPrice = ({
           <Modal.Title>placing order</Modal.Title>
         </Modal.Header>
         <Modal.Body>are you sure you want to place this order 
-          with subtotal of {subtotal.toFixed(2)} EGP
+          with subtotal of ${subtotal.toFixed(2)} 
           {!loading && error && (<p> {error} </p>)}
         </Modal.Body>
         <Modal.Footer>
@@ -69,7 +69,7 @@ const CartSubtotalPrice = ({
       </Modal>
       <div className="py-5 fw-semibold fs-5 d-flex justify-content-between">
         <span>Subtotal: </span>
-        <span>{subtotal.toFixed(2)} EGP</span>
+        <span>${subtotal.toFixed(2)} </span>
       </div>
 
       {userAccessToken && (
