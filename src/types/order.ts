@@ -1,8 +1,14 @@
-import type { TProduct } from "./product";
-
+export type TOrderProduct = {
+    id: number;
+    title: string;
+    img: string;
+    price: number;
+    quantity: number;
+}
 export type TOrderItem = {
     id: number;
-    userId: number;
-    items: TProduct[];
+    userId: number | string;
+    items: TOrderProduct[];
     subtotal: number;
+    createdAt: string;
 }

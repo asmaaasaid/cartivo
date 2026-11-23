@@ -4,6 +4,7 @@ import type { TOrderItem } from "@customTypes/order";
 import actPlaceOrder from "./act/actPlaceOrder";
 import actGetOrders from "./act/actGetOrders";
 import { isString } from "@customTypes/guards";
+import { authLogout } from "@store/auth/authSlice";
 
 interface IOrderSlice {
   loading: TLoading;
@@ -21,10 +22,9 @@ const orderSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    resetOrderStatus : (state)=>{
-      state.loading = 'idle',
-      state.error = null
-    }
+    resetOrderStatus: (state) => {
+      ((state.loading = "idle"), (state.error = null));
+    },
   },
   extraReducers: (builder) => {
     // place order
@@ -47,7 +47,7 @@ const orderSlice = createSlice({
     });
     builder.addCase(actGetOrders.fulfilled, (state, action) => {
       state.loading = "succeeded";
-      state.orderList = action.payload
+      state.orderList = action.payload;
     });
     builder.addCase(actGetOrders.rejected, (state, action) => {
       state.loading = "failed";
@@ -55,9 +55,16 @@ const orderSlice = createSlice({
         state.error = action.payload;
       }
     });
+
+    // logout: reset
+    builder.addCase(authLogout, (state) => {
+      state.orderList = [];
+      state.loading = "idle";
+      state.error = null;
+    });
   },
 });
 
-export {actPlaceOrder, actGetOrders}
-export const {resetOrderStatus} = orderSlice.actions
+export { actPlaceOrder, actGetOrders };
+export const { resetOrderStatus } = orderSlice.actions;
 export default orderSlice.reducer;

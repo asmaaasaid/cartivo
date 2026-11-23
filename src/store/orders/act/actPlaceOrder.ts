@@ -1,33 +1,44 @@
+import type { TOrderItem } from "@customTypes/order";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { readOrder, writeOrder } from "@services/orderStorage";
 import type { RootState } from "@store/index";
-import axiosErrorHandler from "@util/axiosErrorHandler";
-import axios from "axios";
 
 const actPlaceOrder = createAsyncThunk(
   "orders/actPlaceOrder",
   async (subtotal: number, thunkAPI) => {
     const { rejectWithValue, getState } = thunkAPI;
-
     const { cart, auth } = getState() as RootState;
+    const userId = auth.user?.id;
 
-    const orderItems = cart.productsFullInfo.map((el)=> ({
-        id: el.id,
-        quantity: cart.items[el.id],
-        price: el.price,
-        title: el.title,
-        img: el.img
+    if (!userId) {
+      return rejectWithValue("You must be logged in to place an order.");
+    }
+
+    const orderItems = cart.productsFullInfo.map((el) => ({
+      id: el.id,
+      quantity: cart.items[el.id],
+      price: el.price,
+      title: el.title,
+      img: el.img,
     }));
 
-    try{
-      const res = await axios.post("/orders", {
-        userId: auth.user?.id,
-        items: orderItems,
-        subtotal
-      })
-      return res.data;
-    } catch (error){
-        return rejectWithValue(axiosErrorHandler(error));
+    if (orderItems.length === 0) {
+      return rejectWithValue("your cart is empty");
     }
+
+    const orders = readOrder(userId);
+    const nextId = orders.reduce((max, o) => Math.max(max, o.id), 0) + 1;
+
+    const order: TOrderItem = {
+      id: nextId,
+      userId,
+      items: orderItems,
+      subtotal,
+      createdAt: new Date().toISOString(),
+    };
+
+    writeOrder(userId, [...orders, order]);
+    return order;
   },
 );
 

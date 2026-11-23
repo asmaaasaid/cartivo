@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { actGetOrders, resetOrderStatus } from "@store/orders/ordersSlice";
-import type { TProduct } from "@customTypes/product";
+import type { TOrderProduct } from "@customTypes/order";
 
 const useOrders = () => {
   const dispatch = useAppDispatch();
@@ -9,7 +9,7 @@ const useOrders = () => {
   const { loading, error, orderList } = useAppSelector((state) => state.orders);
 
   const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<TProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<TOrderProduct[]>([]);
 
   const viewDetailsHandler = (id: number) => {
     const productDetails = orderList.find((order) => order.id === id);

@@ -1,7 +1,7 @@
 import useOrders from "@hooks/useOrders";
 import Loading from "@components/feedback/Loading/Loading";
-import  Heading  from "@components/common/Heading/Heading";
-import  ProductInfo  from "@components/eCommerce/ProductInfo/ProductInfo";
+import Heading from "@components/common/Heading/Heading";
+import ProductInfo from "@components/eCommerce/ProductInfo/ProductInfo";
 import { Table, Modal } from "react-bootstrap";
 
 const Orders = () => {
@@ -42,6 +42,7 @@ const Orders = () => {
           <thead>
             <tr>
               <th>Order Number</th>
+              <th>Date</th>
               <th>Items</th>
               <th>Total Price</th>
             </tr>
@@ -50,6 +51,7 @@ const Orders = () => {
             {orderList.map((el) => (
               <tr key={el.id}>
                 <td>#{el.id}</td>
+                <td>{new Date(el.createdAt).toLocaleDateString()}</td>
                 <td>
                   {el.items.length} item(s)
                   {" / "}
@@ -60,7 +62,7 @@ const Orders = () => {
                     Product Details
                   </span>
                 </td>
-                <td>{el.subtotal.toFixed(2)}</td>
+                <td>${el.subtotal.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
